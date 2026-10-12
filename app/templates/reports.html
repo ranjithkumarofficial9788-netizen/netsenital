@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Incident Reports & Data Export — NetSential{% endblock %}
+{% block page_title %}<i class="bi bi-file-earmark-bar-graph-fill text-info"></i> Security Incident & Compliance Reports{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+  <div class="row g-4">
+    <div class="col-12 col-lg-7">
+      <div class="soc-card">
+        <div class="soc-card-header">
+          <h6 class="soc-card-title"><i class="bi bi-file-earmark-arrow-down-fill text-info"></i> Export Security Audit Data</h6>
+          <span class="badge bg-dark border border-secondary text-info">Sanitized CSV</span>
+        </div>
+        <div class="soc-card-body p-4">
+          <form id="reportExportForm" action="{{ url_for('reports.export_csv') }}" method="GET">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label text-muted small text-uppercase fw-semibold">Report Dataset</label>
+                <select class="form-select" name="type" id="reportTypeSelect">
+                  <option value="events" selected>Security Events Log</option>
+                  <option value="alerts">Correlated Threat Alerts</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label text-muted small text-uppercase fw-semibold">Severity Threshold</label>
+                <select class="form-select" name="severity">
+                  <option value="ALL">All Severities</option>
+                  <option value="CRITICAL">CRITICAL Only</option>
+                  <option value="HIGH">HIGH & CRITICAL</option>
+                  <option value="MEDIUM">MEDIUM and Above</option>
+                  <option value="LOW">All (Include LOW)</option>
+                </select>
+              </div>
+
+              <div class="col-md-6" id="statusFilterContainer" style="display: none;">
+                <label class="form-label text-muted small text-uppercase fw-semibold">Alert Status</label>
+                <select class="form-select" name="status">
+                  <option value="ALL">All Statuses</option>
+                  <option value="NEW">NEW</option>
+                  <option value="ACKNOWLEDGED">ACKNOWLEDGED</option>
+                  <option value="RESOLVED">RESOLVED</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label text-muted small text-uppercase fw-semibold">Max Records</label>
+                <select class="form-select" name="limit">
+                  <option value="1000">1,000 Records</option>
+                  <option value="2500" selected>2,500 Records</option>
+                  <option value="5000">5,000 Records</option>
+                  <option value="10000">10,000 Records</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label text-muted small text-uppercase fw-semibold">From (UTC)</label>
+                <input type="datetime-local" class="form-control" name="start_date">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label text-muted small text-uppercase fw-semibold">To (UTC)</label>
+                <input type="datetime-local" class="form-control" name="end_date">
+              </div>
+
+              <div class="col-12 mt-4 pt-3 border-top border-secondary d-flex justify-content-between align-items-center">
+                <span class="small text-muted"><i class="bi bi-clock-history"></i> Logged in audit trail automatically</span>
+                <button type="submit" class="btn btn-soc-primary px-4">
+                  <i class="bi bi-download"></i> Generate CSV Report
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security & Compliance Information Card -->
+    <div class="col-12 col-lg-5">
+      <div class="soc-card h-100">
+        <div class="soc-card-header">
+          <h6 class="soc-card-title"><i class="bi bi-shield-lock-fill text-warning"></i> Report Hardening & Compliance</h6>
+        </div>
+        <div class="soc-card-body small">
+          <div class="mb-3">
+            <h6 class="text-white fs-6"><i class="bi bi-check-circle-fill text-success"></i> Formula Injection Mitigation (CWE-1236)</h6>
+            <p class="text-muted">
+              Cells containing dynamic formulas starting with <code>=</code>, <code>+</code>, <code>-</code>, or <code>@</code> are sanitized with leading single quotes to prevent code execution when opened in Excel or Calc.
+            </p>
+          </div>
+          <div class="mb-3">
+            <h6 class="text-white fs-6"><i class="bi bi-check-circle-fill text-success"></i> Credential Sanitization</h6>
+            <p class="text-muted">
+              Passwords, secret hashes, authentication tokens, and private session cookies are excluded from all export datasets.
+            </p>
+          </div>
+          <div>
+            <h6 class="text-white fs-6"><i class="bi bi-check-circle-fill text-success"></i> Audit Accountability</h6>
+            <p class="text-muted">
+              Every exported report creates an immutable record in the audit trail indicating the requesting analyst, timestamp, and query parameters.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const typeSelect = document.getElementById("reportTypeSelect");
+  const statusContainer = document.getElementById("statusFilterContainer");
+  if (typeSelect && statusContainer) {
+    typeSelect.addEventListener("change", () => {
+      statusContainer.style.display = typeSelect.value === "alerts" ? "block" : "none";
+    });
+  }
+</script>
+{% endblock %}

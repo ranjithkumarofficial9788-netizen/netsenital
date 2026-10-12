@@ -1,0 +1,6 @@
+timestamp,event_type,source_ip,username,status,severity,message
+2026-10-12 09:00:00,login_failure,999.999.999.999,user1,failure,HIGH,This row has an invalid IP address
+invalid-date-format,login_success,192.168.1.1,user2,success,LOW,This row has an unparseable timestamp
+2026-10-12 09:02:00,,192.168.1.2,user3,failure,LOW,This row is missing event_type
+2026-10-12 09:03:00,login_failure,192.168.1.3,user4,failure,SUPER_EXTREME,This row has an unknown severity
+2026-10-12 09:04:00,login_success,192.168.1.4,user5,success,LOW,This row is valid and should be accepted

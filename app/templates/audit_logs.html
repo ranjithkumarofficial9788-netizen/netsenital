@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block title %}Audit Trail — NetSential{% endblock %}
+{% block page_title %}<i class="bi bi-journal-text text-info"></i> Immutable Security Audit Trail{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+  <!-- Filter Card -->
+  <div class="soc-card mb-4">
+    <div class="soc-card-body p-3">
+      <div class="row g-2 align-items-center">
+        <div class="col-12 col-md-4">
+          <label class="small text-muted text-uppercase mb-1 fw-semibold">Action Category</label>
+          <select class="form-select form-select-sm" id="auditActionFilter">
+            <option value="ALL">All Actions</option>
+            <option value="LOGIN_SUCCESS">LOGIN_SUCCESS</option>
+            <option value="LOGIN_FAILED">LOGIN_FAILED</option>
+            <option value="LOGOUT">LOGOUT</option>
+            <option value="ALERT_UPDATE">ALERT_UPDATE</option>
+            <option value="LOG_UPLOAD">LOG_UPLOAD</option>
+            <option value="DETECTION_RUN">DETECTION_RUN</option>
+            <option value="REPORT_EXPORT">REPORT_EXPORT</option>
+            <option value="USER_CREATE">USER_CREATE</option>
+            <option value="USER_UPDATE">USER_UPDATE</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audit Table Card -->
+  <div class="soc-card">
+    <div class="soc-card-header">
+      <h6 class="soc-card-title"><i class="bi bi-shield-shaded text-info"></i> System Audit Entries</h6>
+      <span class="badge bg-dark border border-secondary text-info" id="auditTotalBadge">0 events</span>
+    </div>
+    <div class="soc-card-body p-0">
+      <div class="soc-table-container">
+        <table class="table soc-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Timestamp (UTC)</th>
+              <th>Action</th>
+              <th>Analyst / Actor</th>
+              <th>IP Address</th>
+              <th>Details & Context</th>
+            </tr>
+          </thead>
+          <tbody id="auditTableBody">
+            <tr><td colspan="6" class="text-center py-4 text-muted"><span class="spinner-border spinner-border-sm"></span> Loading audit logs...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Navigation -->
+      <div class="d-flex align-items-center justify-content-between p-3 border-top border-secondary">
+        <div class="text-muted small" id="auditPaginationInfo">Showing 0 of 0</div>
+        <div class="btn-group btn-group-sm">
+          <button type="button" class="btn btn-soc-secondary" id="auditPrevBtn" disabled><i class="bi bi-chevron-left"></i> Prev</button>
+          <button type="button" class="btn btn-soc-secondary" id="auditNextBtn" disabled>Next <i class="bi bi-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  let auditPage = 1;
+  const auditPerPage = 25;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    loadAuditLogs();
+
+    const filter = document.getElementById("auditActionFilter");
+    if (filter) {
+      filter.addEventListener("change", () => {
+        auditPage = 1;
+        loadAuditLogs();
+      });
+    }
+
+    const prevBtn = document.getElementById("auditPrevBtn");
+    const nextBtn = document.getElementById("auditNextBtn");
+    if (prevBtn) {
+      prevBtn.addEventListener("click", () => {
+        if (auditPage > 1) {
+          auditPage--;
+          loadAuditLogs();
+        }
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener("click", () => {
+        auditPage++;
+        loadAuditLogs();
+      });
+    }
+  });
+
+  async function loadAuditLogs() {
+    const tbody = document.getElementById("auditTableBody");
+    if (!tbody) return;
+
+    const action = document.getElementById("auditActionFilter")?.value || "ALL";
+    const params = new URLSearchParams({
+      page: auditPage,
+      per_page: auditPerPage,
+      action: action,
+    });
+
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted"><span class="spinner-border spinner-border-sm"></span> Loading audit entries...</td></tr>`;
+
+    try {
+      const res = await secureFetch(`/api/audit-logs?${params.toString()}`);
+      const data = await res.json();
+      if (!data.success) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger">Error: ${data.error}</td></tr>`;
+        return;
+      }
+
+      const items = data.items;
+      const badge = document.getElementById("auditTotalBadge");
+      if (badge) badge.textContent = `${data.total.toLocaleString()} entries`;
+
+      const info = document.getElementById("auditPaginationInfo");
+      if (info) {
+        const startNum = data.total === 0 ? 0 : (data.page - 1) * data.per_page + 1;
+        const endNum = Math.min(data.page * data.per_page, data.total);
+        info.textContent = `Showing ${startNum} - ${endNum} of ${data.total.toLocaleString()} (Page ${data.page} of ${Math.max(1, data.pages)})`;
+      }
+
+      const prevBtn = document.getElementById("auditPrevBtn");
+      const nextBtn = document.getElementById("auditNextBtn");
+      if (prevBtn) prevBtn.disabled = data.page <= 1;
+      if (nextBtn) nextBtn.disabled = data.page >= data.pages;
+
+      if (items.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-muted">No audit logs found matching criteria.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = items.map(entry => {
+        let actionColor = "bg-secondary";
+        if (entry.action.includes("FAILED") || entry.action.includes("BLOCKED")) actionColor = "bg-danger";
+        else if (entry.action.includes("SUCCESS")) actionColor = "bg-success";
+        else if (entry.action.includes("ALERT")) actionColor = "bg-warning text-dark";
+        else if (entry.action.includes("UPLOAD")) actionColor = "bg-info text-dark";
+        else if (entry.action.includes("USER")) actionColor = "bg-primary";
+
+        return `
+          <tr>
+            <td class="text-muted">#${entry.id}</td>
+            <td class="text-nowrap small text-muted">${formatDate(entry.created_at)}</td>
+            <td><span class="badge ${actionColor}">${escapeHtml(entry.action)}</span></td>
+            <td class="fw-semibold text-white">${escapeHtml(entry.username)}</td>
+            <td><code>${escapeHtml(entry.ip_address || "—")}</code></td>
+            <td class="text-light">${escapeHtml(entry.details || "—")}</td>
+          </tr>
+        `;
+      }).join("");
+
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger">Failed to load audit logs: ${err.message}</td></tr>`;
+    }
+  }
+</script>
+{% endblock %}

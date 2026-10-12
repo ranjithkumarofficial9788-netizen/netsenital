@@ -1,0 +1,11 @@
+timestamp,event_type,source_ip,username,status,severity,message
+2026-10-12 08:00:10,login_failure,198.51.100.23,root,failure,HIGH,SSH auth failed for root from 198.51.100.23 port 45210
+2026-10-12 08:00:35,login_failure,198.51.100.23,root,failure,HIGH,SSH auth failed for root from 198.51.100.23 port 45212
+2026-10-12 08:01:05,login_failure,198.51.100.23,root,failure,HIGH,Invalid password for root via SSH
+2026-10-12 08:01:40,login_failure,198.51.100.23,root,failure,HIGH,PAM authentication failure: root
+2026-10-12 08:02:15,login_failure,198.51.100.23,root,failure,HIGH,Repeated password failure for root
+2026-10-12 08:02:50,login_failure,198.51.100.23,root,failure,HIGH,Connection closed by authenticating user root
+2026-10-12 08:05:00,login_success,192.168.1.105,jdoe,success,LOW,User jdoe logged into employee portal
+2026-10-12 08:06:20,file_access,10.0.0.15,service_backup,success,LOW,Automated backup accessed /var/log/syslog
+2026-10-12 08:07:45,port_scan,203.0.113.50,,blocked,MEDIUM,TCP SYN scan against internal gateway ports
+2026-10-12 08:10:00,privilege_escalation,10.0.2.80,svc_account,attempt,CRITICAL,Unauthorized sudo execution detected for /bin/sh

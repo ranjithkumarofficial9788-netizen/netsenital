@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}User Management — NetSential{% endblock %}
+{% block page_title %}<i class="bi bi-people-fill text-danger"></i> Administrator User Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+  <div class="soc-card">
+    <div class="soc-card-header">
+      <div class="d-flex align-items-center gap-2">
+        <h6 class="soc-card-title"><i class="bi bi-person-badge-fill text-info"></i> SOC User Accounts & RBAC</h6>
+      </div>
+      <div>
+        <button class="btn btn-sm btn-soc-primary" data-bs-toggle="modal" data-bs-target="#createUserModal">
+          <i class="bi bi-person-plus-fill"></i> Provision New User
+        </button>
+      </div>
+    </div>
+    <div class="soc-card-body p-0">
+      <div class="soc-table-container">
+        <table class="table soc-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Account Status</th>
+              <th>Created (UTC)</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in users %}
+            <tr>
+              <td class="text-muted">#{{ u.id }}</td>
+              <td class="fw-semibold text-white">
+                <i class="bi bi-person-circle text-info me-1"></i> {{ u.username }}
+                {% if u.id == current_user.id %}
+                  <span class="badge bg-secondary ms-1" style="font-size: 0.65rem;">You</span>
+                {% endif %}
+              </td>
+              <td class="text-muted">{{ u.email }}</td>
+              <td>
+                <span class="badge {% if u.role == 'admin' %}bg-danger{% else %}bg-primary{% endif %} text-uppercase">
+                  {{ u.role }}
+                </span>
+              </td>
+              <td>
+                {% if u.is_active %}
+                  <span class="badge bg-success"><i class="bi bi-check-circle-fill"></i> Active</span>
+                {% else %}
+                  <span class="badge bg-danger"><i class="bi bi-x-circle-fill"></i> Disabled</span>
+                {% endif %}
+              </td>
+              <td class="text-muted small">{{ u.created_at.strftime('%b %d, %Y') if u.created_at else '—' }}</td>
+              <td class="text-end">
+                {% if u.id != current_user.id %}
+                  <button class="btn btn-sm {% if u.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %} py-0 px-2"
+                          onclick="toggleUserStatus({{ u.id }}, {{ 'false' if u.is_active else 'true' }})">
+                    {% if u.is_active %}Deactivate{% else %}Activate{% endif %}
+                  </button>
+                {% else %}
+                  <span class="text-muted small fst-italic">Current Session</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create User Modal -->
+<div class="modal fade" id="createUserModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content soc-modal">
+      <div class="modal-header soc-modal-header">
+        <h5 class="modal-title fs-6"><i class="bi bi-person-plus text-info"></i> Provision SOC Account</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="createUserForm">
+        <div class="modal-body p-4">
+          <div id="createUserError" class="alert alert-danger d-none"></div>
+
+          <div class="mb-3">
+            <label class="form-label small text-muted text-uppercase fw-semibold">Username</label>
+            <input type="text" class="form-control" name="username" required minlength="3" placeholder="e.g. analyst_smith">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small text-muted text-uppercase fw-semibold">Email Address</label>
+            <input type="email" class="form-control" name="email" required placeholder="analyst@netsential.local">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small text-muted text-uppercase fw-semibold">Initial Password</label>
+            <input type="password" class="form-control" name="password" required minlength="8" placeholder="Minimum 8 characters">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small text-muted text-uppercase fw-semibold">SOC Access Role</label>
+            <select class="form-select" name="role">
+              <option value="analyst" selected>Security Analyst (Read & Investigate)</option>
+              <option value="admin">SOC Administrator (Full Management)</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer soc-modal-footer">
+          <button type="button" class="btn btn-sm btn-soc-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" id="saveUserBtn" class="btn btn-sm btn-soc-primary">Create User</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const createForm = document.getElementById("createUserForm");
+  const errorBox = document.getElementById("createUserError");
+
+  if (createForm) {
+    createForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorBox.classList.add("d-none");
+
+      const formData = new FormData(createForm);
+      const payload = Object.fromEntries(formData.entries());
+
+      try {
+        const res = await secureFetch("/api/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert(`Account created successfully for ${data.user.username}`);
+          window.location.reload();
+        } else {
+          errorBox.textContent = data.error || "Failed to create user";
+          errorBox.classList.remove("d-none");
+        }
+      } catch (err) {
+        errorBox.textContent = "Network error: " + err.message;
+        errorBox.classList.remove("d-none");
+      }
+    });
+  }
+
+  async function toggleUserStatus(userId, activate) {
+    if (!confirm(`Are you sure you want to ${activate ? 'activate' : 'deactivate'} this user account?`)) {
+      return;
+    }
+
+    try {
+      const res = await secureFetch(`/api/users/${userId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ is_active: activate }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        window.location.reload();
+      } else {
+        alert("Action failed: " + data.error);
+      }
+    } catch (err) {
+      alert("Network error: " + err.message);
+    }
+  }
+</script>
+{% endblock %}

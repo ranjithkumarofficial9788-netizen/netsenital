@@ -1,0 +1,5 @@
+{"timestamp": "2026-10-12T08:15:00Z", "event_type": "login_attempt", "source_ip": "45.33.32.156", "username": "admin", "status": "failure", "severity": "HIGH", "message": "Watchlisted IP login attempt against web application"}
+{"timestamp": "2026-10-12T08:15:20Z", "event_type": "login_attempt", "source_ip": "45.33.32.156", "username": "admin", "status": "failure", "severity": "HIGH", "message": "Watchlisted IP repeated login attempt"}
+{"timestamp": "2026-10-12T08:16:00Z", "event_type": "web_request", "source_ip": "192.168.1.55", "username": "analyst2", "status": "success", "severity": "LOW", "message": "Normal GET /dashboard request"}
+{"timestamp": "2026-10-12T08:18:12Z", "event_type": "malware_alert", "source_ip": "10.0.3.44", "username": "finance_user", "status": "blocked", "severity": "CRITICAL", "message": "EDR detected ransomware heuristic match in temporary directory"}
+{"timestamp": "2026-10-12T08:20:00Z", "event_type": "dns_query", "source_ip": "192.168.1.80", "username": "marketing1", "status": "success", "severity": "LOW", "message": "Standard DNS query for google.com"}

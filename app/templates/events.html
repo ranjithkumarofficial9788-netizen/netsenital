@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Security Events Explorer — NetSential{% endblock %}
+{% block page_title %}<i class="bi bi-activity text-info"></i> Security Events Explorer{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+  <!-- Filter & Search Card -->
+  <div class="soc-card mb-4">
+    <div class="soc-card-body p-3">
+      <form id="eventsFilterForm" class="row g-2 align-items-center">
+        <!-- Search Query -->
+        <div class="col-12 col-md-3">
+          <div class="input-group input-group-sm">
+            <span class="input-group-text bg-dark border-secondary text-info"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control" id="filterSearch" placeholder="Search IP, user, message...">
+          </div>
+        </div>
+
+        <!-- Severity Filter -->
+        <div class="col-6 col-md-2">
+          <select class="form-select form-select-sm" id="filterSeverity">
+            <option value="ALL">All Severities</option>
+            <option value="LOW">LOW</option>
+            <option value="MEDIUM">MEDIUM</option>
+            <option value="HIGH">HIGH</option>
+            <option value="CRITICAL">CRITICAL</option>
+          </select>
+        </div>
+
+        <!-- Event Type Filter -->
+        <div class="col-6 col-md-2">
+          <select class="form-select form-select-sm" id="filterEventType">
+            <option value="all">All Event Types</option>
+            {% for et in event_types %}
+              <option value="{{ et }}">{{ et }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Date Range Filter -->
+        <div class="col-6 col-md-2">
+          <input type="datetime-local" class="form-control form-control-sm" id="filterStartDate" title="Start Time">
+        </div>
+        <div class="col-6 col-md-2">
+          <input type="datetime-local" class="form-control form-control-sm" id="filterEndDate" title="End Time">
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="col-12 col-md-1 d-flex gap-1 justify-content-end">
+          <button type="button" id="resetFiltersBtn" class="btn btn-sm btn-soc-secondary" title="Reset Filters">
+            <i class="bi bi-arrow-counterclockwise"></i>
+          </button>
+          <button type="submit" class="btn btn-sm btn-soc-primary" title="Apply Filters">
+            <i class="bi bi-funnel-fill"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Events Table Card -->
+  <div class="soc-card">
+    <div class="soc-card-header">
+      <div class="d-flex align-items-center gap-2">
+        <h6 class="soc-card-title"><i class="bi bi-list-columns-reverse text-info"></i> Ingested Events Stream</h6>
+        <span class="badge bg-dark border border-secondary text-info" id="totalEventsBadge">0 events</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button id="exportFilteredEventsBtn" class="btn btn-sm btn-outline-info py-1 px-2" style="font-size: 0.75rem;">
+          <i class="bi bi-file-earmark-arrow-down"></i> Export CSV
+        </button>
+      </div>
+    </div>
+
+    <div class="soc-card-body p-0">
+      <div class="soc-table-container">
+        <table class="table soc-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Timestamp (UTC)</th>
+              <th>Event Type</th>
+              <th>Source IP</th>
+              <th>Username</th>
+              <th>Status</th>
+              <th>Severity</th>
+              <th>Message</th>
+              <th class="text-end">Details</th>
+            </tr>
+          </thead>
+          <tbody id="eventsTableBody">
+            <tr><td colspan="9" class="text-center py-4 text-muted"><span class="spinner-border spinner-border-sm"></span> Loading security events...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Navigation -->
+      <div class="d-flex align-items-center justify-content-between p-3 border-top border-secondary">
+        <div class="text-muted small" id="paginationInfo">Showing 0 of 0</div>
+        <div class="btn-group btn-group-sm">
+          <button type="button" class="btn btn-soc-secondary" id="prevPageBtn" disabled><i class="bi bi-chevron-left"></i> Prev</button>
+          <button type="button" class="btn btn-soc-secondary" id="nextPageBtn" disabled>Next <i class="bi bi-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Event Detail Modal -->
+<div class="modal fade" id="eventDetailModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content soc-modal">
+      <div class="modal-header soc-modal-header">
+        <h5 class="modal-title fs-6"><i class="bi bi-info-circle text-info"></i> Event Investigation Detail</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4" id="eventModalBody">
+        <!-- Injected via events.js -->
+      </div>
+      <div class="modal-footer soc-modal-footer">
+        <button type="button" class="btn btn-sm btn-soc-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/events.js') }}"></script>
+{% endblock %}

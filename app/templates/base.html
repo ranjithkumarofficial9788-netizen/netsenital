@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>{% block title %}NetSential{% endblock %} — Security Operations Center</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS & Icons CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <!-- NetSential SOC Dark Custom Stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  {% if current_user.is_authenticated %}
+  <div class="soc-wrapper">
+    <!-- Sidebar Navigation -->
+    <aside class="soc-sidebar" id="socSidebar">
+      <a href="{{ url_for('dashboard.index') }}" class="soc-brand">
+        <div class="soc-brand-icon">
+          <i class="bi bi-shield-lock-fill"></i>
+        </div>
+        <div class="soc-brand-text">Net<span>Sential</span></div>
+      </a>
+
+      <div class="soc-nav">
+        <div class="soc-nav-heading">Threat Monitoring</div>
+        <a href="{{ url_for('dashboard.index') }}" class="soc-nav-link {% if request.endpoint == 'dashboard.index' %}active{% endif %}">
+          <i class="bi bi-grid-1x2-fill"></i>
+          <span>Overview</span>
+        </a>
+        <a href="{{ url_for('events.index') }}" class="soc-nav-link {% if request.endpoint == 'events.index' %}active{% endif %}">
+          <i class="bi bi-activity"></i>
+          <span>Security Events</span>
+        </a>
+        <a href="{{ url_for('alerts.index') }}" class="soc-nav-link {% if request.endpoint == 'alerts.index' %}active{% endif %}">
+          <i class="bi bi-shield-exclamation"></i>
+          <span>Threat Alerts</span>
+        </a>
+
+        <div class="soc-nav-heading mt-2">Data Operations</div>
+        <a href="{{ url_for('uploads.index') }}" class="soc-nav-link {% if request.endpoint == 'uploads.index' %}active{% endif %}">
+          <i class="bi bi-cloud-arrow-up-fill"></i>
+          <span>Log Upload</span>
+        </a>
+        <a href="{{ url_for('reports.index') }}" class="soc-nav-link {% if request.endpoint == 'reports.index' %}active{% endif %}">
+          <i class="bi bi-file-earmark-bar-graph-fill"></i>
+          <span>Reports</span>
+        </a>
+        <a href="{{ url_for('audit.index') }}" class="soc-nav-link {% if request.endpoint == 'audit.index' %}active{% endif %}">
+          <i class="bi bi-journal-text"></i>
+          <span>Audit Logs</span>
+        </a>
+
+        {% if current_user.is_admin() %}
+        <div class="soc-nav-heading mt-2">Administration</div>
+        <a href="{{ url_for('users.index') }}" class="soc-nav-link {% if request.endpoint == 'users.index' %}active{% endif %}">
+          <i class="bi bi-people-fill"></i>
+          <span>User Management</span>
+        </a>
+        {% endif %}
+      </div>
+
+      <div class="soc-sidebar-footer">
+        <div class="soc-status-indicator">
+          <span class="status-dot"></span>
+          <span>SOC ENGINE: <strong>ACTIVE</strong></span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="soc-main">
+      <!-- Top Header -->
+      <header class="soc-header">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-sm btn-outline-secondary d-lg-none" id="sidebarToggle" aria-label="Toggle Sidebar">
+            <i class="bi bi-list fs-5"></i>
+          </button>
+          <div class="soc-header-title">
+            {% block page_title %}<i class="bi bi-shield-shaded text-info"></i> Security Operations Center{% endblock %}
+          </div>
+        </div>
+
+        <div class="soc-header-actions">
+          <button id="quickRunDetectionBtn" class="btn btn-sm btn-soc-primary d-none d-sm-inline-flex align-items-center gap-1" title="Execute Threat Detection Engine">
+            <i class="bi bi-play-circle-fill"></i>
+            <span>Run Detection</span>
+          </button>
+
+          <!-- User Profile Dropdown -->
+          <div class="dropdown">
+            <button class="btn btn-sm btn-soc-secondary dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle text-info"></i>
+              <span class="d-none d-md-inline">{{ current_user.username }}</span>
+              <span class="badge {% if current_user.is_admin() %}bg-danger{% else %}bg-primary{% endif %} text-uppercase" style="font-size: 0.65rem;">
+                {{ current_user.role }}
+              </span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark bg-dark border-secondary">
+              <li class="dropdown-header text-muted">Session: Active Analyst</li>
+              <li>
+                <form action="{{ url_for('auth.logout') }}" method="POST" class="m-0">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit" class="dropdown-item text-danger d-flex align-items-center gap-2">
+                    <i class="bi bi-box-arrow-right"></i> Sign Out
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <main class="soc-content">
+        <!-- Flash Alert Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="mb-4">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show d-flex align-items-center gap-2" role="alert">
+                  <i class="bi {% if category == 'success' %}bi-check-circle-fill{% elif category == 'danger' %}bi-exclamation-triangle-fill{% else %}bi-info-circle-fill{% endif %}"></i>
+                  <div>{{ message }}</div>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+  {% else %}
+  <!-- Unauthenticated Page Layout (e.g. Login) -->
+  <div class="container-fluid min-vh-100 p-0">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="container pt-4">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block unauth_content %}{% endblock %}
+  </div>
+  {% endif %}
+
+  <!-- Bootstrap 5 JS Bundle CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Global SOC Helper JS -->
+  <script>
+    // Global CSRF helper for AJAX requests
+    function getCsrfToken() {
+      const meta = document.querySelector('meta[name="csrf-token"]');
+      return meta ? meta.getAttribute('content') : '';
+    }
+
+    // Global fetch with CSRF protection header
+    async function secureFetch(url, options = {}) {
+      options.headers = options.headers || {};
+      const token = getCsrfToken();
+      if (token) {
+        options.headers['X-CSRFToken'] = token;
+      }
+      return fetch(url, options);
+    }
+
+    // Sidebar Mobile Toggle
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const socSidebar = document.getElementById('socSidebar');
+    if (sidebarToggle && socSidebar) {
+      sidebarToggle.addEventListener('click', () => {
+        socSidebar.classList.toggle('show');
+      });
+    }
+
+    // Quick Detection Run Button in Header
+    const quickRunDetectionBtn = document.getElementById('quickRunDetectionBtn');
+    if (quickRunDetectionBtn) {
+      quickRunDetectionBtn.addEventListener('click', async () => {
+        quickRunDetectionBtn.disabled = true;
+        quickRunDetectionBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Running...';
+        try {
+          const res = await secureFetch('/api/detection/run', { method: 'POST' });
+          const data = await res.json();
+          if (data.success) {
+            alert(`Threat detection completed!\nNew alerts generated: ${data.new_alerts_count}`);
+            window.location.reload();
+          } else {
+            alert('Error running detection: ' + (data.error || 'Unknown error'));
+          }
+        } catch (err) {
+          alert('Failed to execute threat detection: ' + err.message);
+        } finally {
+          quickRunDetectionBtn.disabled = false;
+          quickRunDetectionBtn.innerHTML = '<i class="bi bi-play-circle-fill"></i> <span>Run Detection</span>';
+        }
+      });
+    }
+  </script>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

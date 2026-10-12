@@ -298,7 +298,49 @@ python run.py
 
 ---
 
-## 9. Automated Testing
+## 9. Deploying to Vercel
+
+The Flask application runs as a Vercel Python Function. Vercel's function filesystem
+is temporary, so production requires a reachable hosted MySQL database; do not use
+SQLite or rely on local files for persistent data. Uploaded logs are parsed during
+the request and their records are stored in MySQL.
+
+1. Create a MySQL 8-compatible hosted database that allows connections from Vercel.
+   Apply the schema to it from your local machine using the database URL:
+
+   ```powershell
+   $env:DATABASE_URL = "mysql+pymysql://USER:PASSWORD@HOST:3306/DATABASE"
+   .\.venv\Scripts\flask.exe --app run.py db upgrade
+   .\.venv\Scripts\flask.exe --app run.py create-admin
+   Remove-Item Env:DATABASE_URL
+   ```
+
+   Use a URL-encoded password if it contains characters such as `@`, `:`, `/`, or `#`.
+   The administrator command prompts for the account details and password.
+
+2. In the [Vercel dashboard](https://vercel.com/new), import this GitHub repository.
+   Keep the project root directory at the repository root. Vercel uses
+   `api/index.py`, `vercel.json`, and the root `requirements.txt` to build and route
+   the Flask application; no frontend build command is needed.
+
+3. In the Vercel project's **Settings → Environment Variables**, add these variables
+   for Production (and Preview too, if you will deploy previews):
+
+   | Name | Value |
+   | --- | --- |
+   | `DATABASE_URL` | `mysql+pymysql://USER:PASSWORD@HOST:3306/DATABASE` |
+   | `SECRET_KEY` | A unique, random secret; generate locally with `python -c "import secrets; print(secrets.token_hex(32))"` |
+   | `MAX_CONTENT_LENGTH` | `4194304` (4 MiB, below Vercel's request-body limit) |
+
+   Keep these values in Vercel's environment settings, not in Git or the repository's
+   `.env` file. The app uses secure session cookies in production.
+
+4. Deploy (or redeploy after adding the environment variables), then open the
+   deployment URL. Sign in with the administrator account created in step 1.
+
+---
+
+## 10. Automated Testing
 
 NetSential includes an automated test suite verifying detection rules, sliding windows, log parser resilience, RBAC enforcement, CSV injection sanitization, and REST APIs.
 
@@ -350,7 +392,7 @@ tests/test_uploads.py::test_empty_file_upload PASSED                     [100%]
 
 ---
 
-## 10. Security Hardening Measures
+## 11. Security Hardening Measures
 
 1. **SQL Injection Defense**: All database operations utilize SQLAlchemy ORM with bound parameters and prepared statements.
 2. **Cross-Site Scripting (XSS)**: Strict Jinja2 template auto-escaping combined with standard DOM text encoding for dynamic JavaScript renders.
@@ -362,7 +404,7 @@ tests/test_uploads.py::test_empty_file_upload PASSED                     [100%]
 
 ---
 
-## 11. Known Limitations & Roadmap
+## 12. Known Limitations & Roadmap
 
 ### Known Limitations:
 - Log ingestion is currently file-based (batch upload of `.csv` or `.jsonl`). It does not yet include continuous syslog (RFC 5424) socket listeners.
@@ -377,6 +419,6 @@ tests/test_uploads.py::test_empty_file_upload PASSED                     [100%]
 
 ---
 
-## 12. License & Author
+## 13. License & Author
 
 Developed by the **NetSential Cybersecurity Engineering Team**. Released under the MIT License for portfolio, educational, and authorized security monitoring applications.

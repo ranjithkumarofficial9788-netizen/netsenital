@@ -62,7 +62,7 @@
     <div class="soc-card-header">
       <div class="d-flex align-items-center gap-2">
         <h6 class="soc-card-title"><i class="bi bi-bell-fill text-warning"></i> Active Threat Alerts</h6>
-        <span class="badge bg-dark border border-secondary text-warning" id="totalAlertsBadge">0 alerts</span>
+        <span class="badge-count" id="totalAlertsBadge">0 alerts</span>
       </div>
       <div>
         <button id="exportFilteredAlertsBtn" class="btn btn-sm btn-outline-info py-1 px-2" style="font-size: 0.75rem;">
@@ -93,7 +93,7 @@
       </div>
 
       <!-- Pagination Navigation -->
-      <div class="d-flex align-items-center justify-content-between p-3 border-top border-secondary">
+      <div class="d-flex align-items-center justify-content-between p-3 border-top">
         <div class="text-muted small" id="alertPaginationInfo">Showing 0 of 0</div>
         <div class="btn-group btn-group-sm">
           <button type="button" class="btn btn-soc-secondary" id="alertPrevBtn" disabled><i class="bi bi-chevron-left"></i> Prev</button>
@@ -110,7 +110,7 @@
     <div class="modal-content soc-modal">
       <div class="modal-header soc-modal-header">
         <h5 class="modal-title fs-6"><i class="bi bi-shield-shaded text-warning"></i> Threat Alert Investigation</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-4" id="alertModalBody">
         <!-- Injected via alerts.js -->

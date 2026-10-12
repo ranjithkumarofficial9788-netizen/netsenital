@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}SOC Overview Dashboard — NetSential{% endblock %}
-{% block page_title %}<i class="bi bi-grid-1x2-fill text-info"></i> Security Operations Dashboard{% endblock %}
+{% block page_title %}<i class="bi bi-grid-1x2-fill text-primary"></i> Security Operations Dashboard{% endblock %}
 
 {% block content %}
 <div class="container-fluid p-0">
@@ -12,7 +12,7 @@
         <div class="soc-metric-icon"><i class="bi bi-activity"></i></div>
         <div class="soc-metric-info">
           <div class="soc-metric-label">Total Events</div>
-          <div class="soc-metric-value" id="cardTotalEvents">--</div>
+          <div class="soc-metric-value text-primary" id="cardTotalEvents">--</div>
         </div>
       </div>
     </div>
@@ -42,7 +42,7 @@
         <div class="soc-metric-icon"><i class="bi bi-key-fill"></i></div>
         <div class="soc-metric-info">
           <div class="soc-metric-label">Failed Logins</div>
-          <div class="soc-metric-value" style="color: #c084fc;" id="cardFailedLogins">--</div>
+          <div class="soc-metric-value" style="color: #7e22ce;" id="cardFailedLogins">--</div>
         </div>
       </div>
     </div>
@@ -64,8 +64,8 @@
     <div class="col-12 col-lg-8">
       <div class="soc-card h-100">
         <div class="soc-card-header">
-          <h6 class="soc-card-title"><i class="bi bi-graph-up text-info"></i> Security Events Trend (Last 7 Days)</h6>
-          <span class="badge bg-dark text-info border border-secondary" id="chartTrendStatus">Live Metrics</span>
+          <h6 class="soc-card-title"><i class="bi bi-graph-up text-primary"></i> Security Events Trend (Last 7 Days)</h6>
+          <span class="badge bg-light text-primary border" id="chartTrendStatus">Live Metrics</span>
         </div>
         <div class="soc-card-body">
           <div style="position: relative; height: 280px; width: 100%;">
@@ -79,13 +79,13 @@
     <div class="col-12 col-lg-4">
       <div class="soc-card h-100">
         <div class="soc-card-header">
-          <h6 class="soc-card-title"><i class="bi bi-pie-chart-fill text-info"></i> Event Severity Breakdown</h6>
+          <h6 class="soc-card-title"><i class="bi bi-pie-chart-fill text-primary"></i> Event Severity Breakdown</h6>
         </div>
         <div class="soc-card-body d-flex flex-column align-items-center justify-content-center">
           <div style="position: relative; height: 220px; width: 100%;">
             <canvas id="severityDoughnutChart"></canvas>
           </div>
-          <div class="d-flex justify-content-around w-100 mt-3 pt-2 border-top border-secondary small text-muted text-center" id="severitySummaryLegend">
+          <div class="d-flex justify-content-around w-100 mt-3 pt-2 border-top border-light-subtle small text-muted text-center" id="severitySummaryLegend">
             <!-- Populated dynamically via JS -->
           </div>
         </div>
@@ -100,7 +100,7 @@
       <div class="soc-card h-100">
         <div class="soc-card-header">
           <h6 class="soc-card-title"><i class="bi bi-bell-fill text-warning"></i> Recent Security Alerts</h6>
-          <a href="{{ url_for('alerts.index') }}" class="btn btn-sm btn-outline-info py-0 px-2" style="font-size: 0.75rem;">View All</a>
+          <a href="{{ url_for('alerts.index') }}" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 0.75rem;">View All</a>
         </div>
         <div class="soc-card-body p-0">
           <div class="soc-table-container">
@@ -127,8 +127,8 @@
     <div class="col-12 col-xl-6">
       <div class="soc-card h-100">
         <div class="soc-card-header">
-          <h6 class="soc-card-title"><i class="bi bi-lightning-charge-fill text-cyan"></i> Ingested Security Events</h6>
-          <a href="{{ url_for('events.index') }}" class="btn btn-sm btn-outline-info py-0 px-2" style="font-size: 0.75rem;">Explore</a>
+          <h6 class="soc-card-title"><i class="bi bi-lightning-charge-fill text-primary"></i> Ingested Security Events</h6>
+          <a href="{{ url_for('events.index') }}" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 0.75rem;">Explore</a>
         </div>
         <div class="soc-card-body p-0">
           <div class="soc-table-container">

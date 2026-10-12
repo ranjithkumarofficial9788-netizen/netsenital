@@ -110,7 +110,7 @@ async function loadEvents() {
           <td colspan="9" class="text-center py-5">
             <div class="soc-empty-state">
               <div class="soc-empty-icon"><i class="bi bi-shield-slash"></i></div>
-              <h6 class="text-white">No security events found</h6>
+              <h6 class="text-dark">No security events found</h6>
               <p class="text-muted small">Try relaxing your search terms or date range filters.</p>
             </div>
           </td>
@@ -123,10 +123,10 @@ async function loadEvents() {
       <tr>
         <td class="text-muted">#${ev.id}</td>
         <td class="text-nowrap small text-muted">${formatDate(ev.event_time)}</td>
-        <td><span class="badge bg-dark border border-secondary">${escapeHtml(ev.event_type)}</span></td>
+        <td><span class="badge bg-light border text-dark">${escapeHtml(ev.event_type)}</span></td>
         <td><code>${escapeHtml(ev.source_ip)}</code></td>
         <td class="text-muted">${escapeHtml(ev.username || "—")}</td>
-        <td><span class="badge bg-dark border border-secondary text-uppercase" style="font-size: 0.7rem;">${escapeHtml(ev.status)}</span></td>
+        <td><span class="badge bg-light border text-secondary text-uppercase" style="font-size: 0.7rem;">${escapeHtml(ev.status)}</span></td>
         <td><span class="badge-sev badge-sev-${ev.severity.toLowerCase()}">${ev.severity}</span></td>
         <td class="text-truncate" style="max-width: 250px;" title="${escapeHtml(ev.message)}">${escapeHtml(ev.message)}</td>
         <td class="text-end">
@@ -162,10 +162,10 @@ async function viewEventDetails(eventId) {
     let alertsHtml = `<span class="text-muted">None triggered for this event.</span>`;
     if (ev.alerts && ev.alerts.length > 0) {
       alertsHtml = ev.alerts.map(a => `
-        <div class="p-2 mb-2 rounded bg-dark border border-secondary d-flex justify-content-between align-items-center">
+        <div class="p-2 mb-2 rounded bg-light border d-flex justify-content-between align-items-center">
           <div>
             <span class="badge-sev badge-sev-${a.severity.toLowerCase()} me-2">${a.severity}</span>
-            <strong class="text-white">${escapeHtml(a.title)}</strong>
+            <strong class="text-dark">${escapeHtml(a.title)}</strong>
             <div class="small text-muted">${escapeHtml(a.description)}</div>
           </div>
           <span class="badge bg-secondary">${a.status}</span>
@@ -177,11 +177,11 @@ async function viewEventDetails(eventId) {
       <div class="row g-3">
         <div class="col-md-6">
           <label class="text-muted small text-uppercase">Event ID</label>
-          <div class="fw-bold text-white">#${ev.id}</div>
+          <div class="fw-bold text-dark">#${ev.id}</div>
         </div>
         <div class="col-md-6">
           <label class="text-muted small text-uppercase">Timestamp</label>
-          <div class="fw-bold text-white">${formatDate(ev.event_time)} UTC</div>
+          <div class="fw-bold text-dark">${formatDate(ev.event_time)} UTC</div>
         </div>
         <div class="col-md-6">
           <label class="text-muted small text-uppercase">Source IP</label>
@@ -189,11 +189,11 @@ async function viewEventDetails(eventId) {
         </div>
         <div class="col-md-6">
           <label class="text-muted small text-uppercase">Username</label>
-          <div class="fw-bold text-white">${escapeHtml(ev.username || "Anonymous / N/A")}</div>
+          <div class="fw-bold text-dark">${escapeHtml(ev.username || "Anonymous / N/A")}</div>
         </div>
         <div class="col-md-6">
           <label class="text-muted small text-uppercase">Event Type</label>
-          <div><span class="badge bg-dark border border-secondary">${escapeHtml(ev.event_type)}</span></div>
+          <div><span class="badge bg-light border text-dark">${escapeHtml(ev.event_type)}</span></div>
         </div>
         <div class="col-md-6">
           <label class="text-muted small text-uppercase">Severity / Status</label>

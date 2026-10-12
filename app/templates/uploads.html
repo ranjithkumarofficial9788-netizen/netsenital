@@ -11,15 +11,15 @@
       <div class="soc-card h-100">
         <div class="soc-card-header">
           <h6 class="soc-card-title"><i class="bi bi-upload text-info"></i> Ingest New Security Log File</h6>
-          <span class="badge bg-dark border border-secondary text-muted">Max 5MB / 5,000 Rows</span>
+          <span class="badge bg-light border text-secondary">Max 5MB / 5,000 Rows</span>
         </div>
         <div class="soc-card-body">
           <form id="uploadLogForm" action="{{ url_for('uploads.index') }}" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-            <div class="border border-2 border-secondary rounded p-4 text-center mb-3" id="dropZone" style="border-style: dashed !important; background-color: rgba(12, 21, 39, 0.4); cursor: pointer;">
+            <div class="border border-2 rounded p-4 text-center mb-3" id="dropZone" style="border-style: dashed !important; border-color: var(--soc-border-subtle) !important; background-color: #f8fafc; cursor: pointer;">
               <i class="bi bi-file-earmark-arrow-up-fill text-info fs-1 mb-2 d-block"></i>
-              <div class="fw-semibold text-white mb-1">Click to browse or drag & drop log file here</div>
+              <div class="fw-semibold text-dark mb-1">Click to browse or drag & drop log file here</div>
               <div class="small text-muted mb-3">Supported Formats: <code>.csv</code>, <code>.jsonl</code>, <code>.log</code>, <code>.json</code></div>
               <input type="file" id="logFileInput" name="log_file" class="d-none" accept=".csv,.jsonl,.json,.log" required>
               <div id="selectedFileInfo" class="small text-info fw-semibold"></div>
@@ -45,14 +45,14 @@
         <div class="soc-card-body small">
           <p class="text-muted mb-2">Events are parsed and normalized into the NetSential event store:</p>
           <div class="mb-3">
-            <strong class="text-white">CSV Format (with headers):</strong>
+            <strong class="text-dark">CSV Format (with headers):</strong>
             <div class="soc-code mt-1 p-2" style="font-size: 0.78rem;">
               timestamp,event_type,source_ip,username,status,severity,message<br>
               2026-10-12 08:00:10,login_failure,198.51.100.23,root,failure,HIGH,SSH auth failed
             </div>
           </div>
           <div>
-            <strong class="text-white">JSON Lines Format (one JSON object per line):</strong>
+            <strong class="text-dark">JSON Lines Format (one JSON object per line):</strong>
             <div class="soc-code mt-1 p-2" style="font-size: 0.78rem;">
               {"timestamp": "2026-10-12T08:15:00Z", "event_type": "login_attempt", "source_ip": "45.33.32.156", "username": "admin", "status": "failure", "severity": "HIGH", "message": "Watchlisted IP login attempt"}
             </div>
@@ -66,7 +66,7 @@
   <div class="soc-card">
     <div class="soc-card-header">
       <h6 class="soc-card-title"><i class="bi bi-clock-history text-info"></i> Ingestion Batch History</h6>
-      <span class="badge bg-dark border border-secondary text-info">{{ batches|length }} Batches</span>
+      <span class="badge-count">{{ batches|length }} Batches</span>
     </div>
     <div class="soc-card-body p-0">
       <div class="soc-table-container">
@@ -88,7 +88,7 @@
               {% for b in batches %}
               <tr>
                 <td class="text-muted">#{{ b.id }}</td>
-                <td class="text-white fw-semibold"><code>{{ b.original_filename }}</code></td>
+                <td class="text-dark fw-semibold"><code>{{ b.original_filename }}</code></td>
                 <td class="text-muted">{{ b.uploader.username if b.uploader else 'System' }}</td>
                 <td class="text-success fw-bold">{{ b.accepted_rows }}</td>
                 <td class="{% if b.rejected_rows > 0 %}text-danger fw-bold{% else %}text-muted{% endif %}">{{ b.rejected_rows }}</td>

@@ -10,7 +10,7 @@
       <div class="soc-card">
         <div class="soc-card-header">
           <h6 class="soc-card-title"><i class="bi bi-file-earmark-arrow-down-fill text-info"></i> Export Security Audit Data</h6>
-          <span class="badge bg-dark border border-secondary text-info">Sanitized CSV</span>
+          <span class="badge-count">Sanitized CSV</span>
         </div>
         <div class="soc-card-body p-4">
           <form id="reportExportForm" action="{{ url_for('reports.export_csv') }}" method="GET">
@@ -64,7 +64,7 @@
                 <input type="datetime-local" class="form-control" name="end_date">
               </div>
 
-              <div class="col-12 mt-4 pt-3 border-top border-secondary d-flex justify-content-between align-items-center">
+              <div class="col-12 mt-4 pt-3 border-top d-flex justify-content-between align-items-center">
                 <span class="small text-muted"><i class="bi bi-clock-history"></i> Logged in audit trail automatically</span>
                 <button type="submit" class="btn btn-soc-primary px-4">
                   <i class="bi bi-download"></i> Generate CSV Report
@@ -84,19 +84,19 @@
         </div>
         <div class="soc-card-body small">
           <div class="mb-3">
-            <h6 class="text-white fs-6"><i class="bi bi-check-circle-fill text-success"></i> Formula Injection Mitigation (CWE-1236)</h6>
+            <h6 class="text-dark fs-6"><i class="bi bi-check-circle-fill text-success"></i> Formula Injection Mitigation (CWE-1236)</h6>
             <p class="text-muted">
               Cells containing dynamic formulas starting with <code>=</code>, <code>+</code>, <code>-</code>, or <code>@</code> are sanitized with leading single quotes to prevent code execution when opened in Excel or Calc.
             </p>
           </div>
           <div class="mb-3">
-            <h6 class="text-white fs-6"><i class="bi bi-check-circle-fill text-success"></i> Credential Sanitization</h6>
+            <h6 class="text-dark fs-6"><i class="bi bi-check-circle-fill text-success"></i> Credential Sanitization</h6>
             <p class="text-muted">
               Passwords, secret hashes, authentication tokens, and private session cookies are excluded from all export datasets.
             </p>
           </div>
           <div>
-            <h6 class="text-white fs-6"><i class="bi bi-check-circle-fill text-success"></i> Audit Accountability</h6>
+            <h6 class="text-dark fs-6"><i class="bi bi-check-circle-fill text-success"></i> Audit Accountability</h6>
             <p class="text-muted">
               Every exported report creates an immutable record in the audit trail indicating the requesting analyst, timestamp, and query parameters.
             </p>

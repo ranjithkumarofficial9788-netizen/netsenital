@@ -32,7 +32,7 @@
   <div class="soc-card">
     <div class="soc-card-header">
       <h6 class="soc-card-title"><i class="bi bi-shield-shaded text-info"></i> System Audit Entries</h6>
-      <span class="badge bg-dark border border-secondary text-info" id="auditTotalBadge">0 events</span>
+      <span class="badge-count" id="auditTotalBadge">0 entries</span>
     </div>
     <div class="soc-card-body p-0">
       <div class="soc-table-container">
@@ -54,7 +54,7 @@
       </div>
 
       <!-- Pagination Navigation -->
-      <div class="d-flex align-items-center justify-content-between p-3 border-top border-secondary">
+      <div class="d-flex align-items-center justify-content-between p-3 border-top">
         <div class="text-muted small" id="auditPaginationInfo">Showing 0 of 0</div>
         <div class="btn-group btn-group-sm">
           <button type="button" class="btn btn-soc-secondary" id="auditPrevBtn" disabled><i class="bi bi-chevron-left"></i> Prev</button>
@@ -155,9 +155,9 @@
             <td class="text-muted">#${entry.id}</td>
             <td class="text-nowrap small text-muted">${formatDate(entry.created_at)}</td>
             <td><span class="badge ${actionColor}">${escapeHtml(entry.action)}</span></td>
-            <td class="fw-semibold text-white">${escapeHtml(entry.username)}</td>
+            <td class="fw-semibold text-dark">${escapeHtml(entry.username)}</td>
             <td><code>${escapeHtml(entry.ip_address || "—")}</code></td>
-            <td class="text-light">${escapeHtml(entry.details || "—")}</td>
+            <td class="text-secondary">${escapeHtml(entry.details || "—")}</td>
           </tr>
         `;
       }).join("");

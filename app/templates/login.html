@@ -3,14 +3,14 @@
 {% block title %}SOC Authentication — NetSential{% endblock %}
 
 {% block unauth_content %}
-<div class="d-flex align-items-center justify-content-center min-vh-100 p-3" style="background: radial-gradient(circle at 50% 20%, #11203d 0%, #070d18 70%);">
-  <div class="soc-card p-4 p-md-5" style="max-width: 440px; width: 100%; border-color: rgba(56, 189, 248, 0.25); box-shadow: 0 0 35px rgba(2, 132, 199, 0.2);">
+<div class="d-flex align-items-center justify-content-center min-vh-100 p-3" style="background: radial-gradient(circle at 50% 20%, #e0f2fe 0%, #f1f5f9 60%, #e2e8f0 100%);">
+  <div class="soc-card p-4 p-md-5 bg-white" style="max-width: 440px; width: 100%; border-color: #e2e8f0; box-shadow: 0 10px 35px rgba(2, 132, 199, 0.1);">
     <div class="text-center mb-4">
-      <div class="d-inline-flex align-items-center justify-content-center mb-3" style="width: 56px; height: 56px; background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%); border-radius: 12px; box-shadow: 0 0 20px rgba(6, 182, 212, 0.45);">
+      <div class="d-inline-flex align-items-center justify-content-center mb-3" style="width: 56px; height: 56px; background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%); border-radius: 12px; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.35);">
         <i class="bi bi-shield-lock-fill text-white fs-3"></i>
       </div>
-      <h3 class="fw-bold text-white mb-1">Net<span class="text-info">Sential</span></h3>
-      <p class="text-muted small text-uppercase tracking-wider mb-0" style="letter-spacing: 1.5px;">Security Operations Center</p>
+      <h3 class="fw-bold text-dark mb-1">Net<span class="text-primary">Sential</span></h3>
+      <p class="text-muted small text-uppercase fw-semibold tracking-wider mb-0" style="letter-spacing: 1.5px;">Security Operations Center</p>
     </div>
 
     <form method="POST" action="{{ url_for('auth.login') }}" class="mb-3">
@@ -19,16 +19,16 @@
       <div class="mb-3">
         <label for="username" class="form-label text-muted small text-uppercase fw-semibold">Analyst Username</label>
         <div class="input-group">
-          <span class="input-group-text bg-dark border-secondary text-info"><i class="bi bi-person-fill"></i></span>
-          <input type="text" class="form-control" id="username" name="username" required autofocus placeholder="Enter your username" autocomplete="username">
+          <span class="input-group-text bg-light border-end-0 text-primary"><i class="bi bi-person-fill"></i></span>
+          <input type="text" class="form-control border-start-0" id="username" name="username" required autofocus placeholder="Enter your username" autocomplete="username">
         </div>
       </div>
 
       <div class="mb-4">
         <label for="password" class="form-label text-muted small text-uppercase fw-semibold">Password</label>
         <div class="input-group">
-          <span class="input-group-text bg-dark border-secondary text-info"><i class="bi bi-key-fill"></i></span>
-          <input type="password" class="form-control" id="password" name="password" required placeholder="Enter your password" autocomplete="current-password">
+          <span class="input-group-text bg-light border-end-0 text-primary"><i class="bi bi-key-fill"></i></span>
+          <input type="password" class="form-control border-start-0" id="password" name="password" required placeholder="Enter your password" autocomplete="current-password">
         </div>
       </div>
 
@@ -38,12 +38,12 @@
       </button>
     </form>
 
-    <div class="mt-4 pt-3 border-top border-secondary text-center">
+    <div class="mt-4 pt-3 border-top border-light-subtle text-center">
       <div class="d-flex align-items-center justify-content-center gap-2 text-warning small mb-1">
-        <i class="bi bi-shield-exclamation"></i>
-        <span class="fw-semibold">RESTRICTED ACCESS</span>
+        <i class="bi bi-shield-exclamation text-warning"></i>
+        <span class="fw-semibold text-secondary">RESTRICTED ACCESS</span>
       </div>
-      <p class="text-muted" style="font-size: 0.72rem; line-height: 1.4;">
+      <p class="text-muted mb-0" style="font-size: 0.72rem; line-height: 1.4;">
         This system is monitored. Unauthorized access attempts are actively logged and reported to security auditing.
       </p>
     </div>

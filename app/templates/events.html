@@ -12,7 +12,7 @@
         <!-- Search Query -->
         <div class="col-12 col-md-3">
           <div class="input-group input-group-sm">
-            <span class="input-group-text bg-dark border-secondary text-info"><i class="bi bi-search"></i></span>
+            <span class="input-group-text bg-light border text-info"><i class="bi bi-search"></i></span>
             <input type="text" class="form-control" id="filterSearch" placeholder="Search IP, user, message...">
           </div>
         </div>
@@ -64,7 +64,7 @@
     <div class="soc-card-header">
       <div class="d-flex align-items-center gap-2">
         <h6 class="soc-card-title"><i class="bi bi-list-columns-reverse text-info"></i> Ingested Events Stream</h6>
-        <span class="badge bg-dark border border-secondary text-info" id="totalEventsBadge">0 events</span>
+        <span class="badge-count" id="totalEventsBadge">0 events</span>
       </div>
       <div class="d-flex align-items-center gap-2">
         <button id="exportFilteredEventsBtn" class="btn btn-sm btn-outline-info py-1 px-2" style="font-size: 0.75rem;">
@@ -96,7 +96,7 @@
       </div>
 
       <!-- Pagination Navigation -->
-      <div class="d-flex align-items-center justify-content-between p-3 border-top border-secondary">
+      <div class="d-flex align-items-center justify-content-between p-3 border-top">
         <div class="text-muted small" id="paginationInfo">Showing 0 of 0</div>
         <div class="btn-group btn-group-sm">
           <button type="button" class="btn btn-soc-secondary" id="prevPageBtn" disabled><i class="bi bi-chevron-left"></i> Prev</button>
@@ -113,7 +113,7 @@
     <div class="modal-content soc-modal">
       <div class="modal-header soc-modal-header">
         <h5 class="modal-title fs-6"><i class="bi bi-info-circle text-info"></i> Event Investigation Detail</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-4" id="eventModalBody">
         <!-- Injected via events.js -->

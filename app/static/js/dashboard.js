@@ -57,24 +57,24 @@ async function loadEventsTimeline() {
           {
             label: "Total Events",
             data: data.totals,
-            borderColor: "#06b6d4",
-            backgroundColor: "rgba(6, 182, 212, 0.12)",
+            borderColor: "#0284c7",
+            backgroundColor: "rgba(2, 132, 199, 0.08)",
             borderWidth: 2,
             tension: 0.35,
             fill: true,
-            pointBackgroundColor: "#38bdf8",
+            pointBackgroundColor: "#0284c7",
             pointRadius: 3,
             pointHoverRadius: 6,
           },
           {
             label: "High & Critical",
             data: data.labels.map((_, i) => (data.breakdown.HIGH[i] || 0) + (data.breakdown.CRITICAL[i] || 0)),
-            borderColor: "#ef4444",
+            borderColor: "#dc2626",
             backgroundColor: "transparent",
             borderWidth: 2,
             borderDash: [5, 5],
             tension: 0.35,
-            pointBackgroundColor: "#ef4444",
+            pointBackgroundColor: "#dc2626",
             pointRadius: 3,
           }
         ],
@@ -86,27 +86,27 @@ async function loadEventsTimeline() {
           legend: {
             position: "top",
             labels: {
-              color: "#94a3b8",
+              color: "#475569",
               font: { family: "Inter", size: 12 },
               usePointStyle: true,
             },
           },
           tooltip: {
-            backgroundColor: "#162544",
+            backgroundColor: "#0f172a",
             titleColor: "#ffffff",
-            bodyColor: "#94a3b8",
-            borderColor: "#1e3256",
+            bodyColor: "#cbd5e1",
+            borderColor: "#334155",
             borderWidth: 1,
             padding: 10,
           },
         },
         scales: {
           x: {
-            grid: { color: "rgba(30, 50, 86, 0.5)" },
+            grid: { color: "#e2e8f0" },
             ticks: { color: "#64748b", font: { family: "Inter", size: 11 } },
           },
           y: {
-            grid: { color: "rgba(30, 50, 86, 0.5)" },
+            grid: { color: "#e2e8f0" },
             ticks: { color: "#64748b", font: { family: "Inter", size: 11 }, precision: 0 },
             beginAtZero: true,
           },
@@ -144,12 +144,12 @@ async function loadSeverityDistribution() {
           {
             data: counts,
             backgroundColor: [
-              "#10b981", // Low
-              "#f59e0b", // Medium
-              "#f97316", // High
-              "#ef4444", // Critical
+              "#16a34a", // Low
+              "#d97706", // Medium
+              "#ea580c", // High
+              "#dc2626", // Critical
             ],
-            borderColor: "#111d35",
+            borderColor: "#ffffff",
             borderWidth: 3,
             hoverOffset: 6,
           },
@@ -162,17 +162,17 @@ async function loadSeverityDistribution() {
           legend: {
             position: "bottom",
             labels: {
-              color: "#94a3b8",
+              color: "#475569",
               font: { family: "Inter", size: 11 },
               usePointStyle: true,
               boxWidth: 8,
             },
           },
           tooltip: {
-            backgroundColor: "#162544",
+            backgroundColor: "#0f172a",
             titleColor: "#ffffff",
-            bodyColor: "#94a3b8",
-            borderColor: "#1e3256",
+            bodyColor: "#cbd5e1",
+            borderColor: "#334155",
             borderWidth: 1,
           },
         },
@@ -185,7 +185,7 @@ async function loadSeverityDistribution() {
       legendElem.innerHTML = `
         <div><span class="text-success fw-bold">${sev.LOW || 0}</span><br>LOW</div>
         <div><span class="text-warning fw-bold">${sev.MEDIUM || 0}</span><br>MED</div>
-        <div><span class="text-orange fw-bold" style="color: #fb923c;">${sev.HIGH || 0}</span><br>HIGH</div>
+        <div><span class="text-orange fw-bold" style="color: #ea580c;">${sev.HIGH || 0}</span><br>HIGH</div>
         <div><span class="text-danger fw-bold">${sev.CRITICAL || 0}</span><br>CRIT</div>
       `;
     }
@@ -209,8 +209,8 @@ async function loadRecentActivity() {
       } else {
         alertsTbody.innerHTML = data.alerts.map(a => `
           <tr>
-            <td><code class="text-info">${escapeHtml(a.rule_code)}</code></td>
-            <td class="text-truncate" style="max-width: 170px;" title="${escapeHtml(a.title)}">${escapeHtml(a.title)}</td>
+            <td><code class="text-primary">${escapeHtml(a.rule_code)}</code></td>
+            <td class="text-truncate fw-medium text-dark" style="max-width: 170px;" title="${escapeHtml(a.title)}">${escapeHtml(a.title)}</td>
             <td><span class="badge-sev badge-sev-${a.severity.toLowerCase()}">${a.severity}</span></td>
             <td><span class="badge-sev badge-status-${a.status === 'NEW' ? 'new' : (a.status === 'ACKNOWLEDGED' ? 'ack' : 'res')}">${a.status}</span></td>
             <td class="text-muted small">${formatDate(a.created_at)}</td>
@@ -227,9 +227,9 @@ async function loadRecentActivity() {
       } else {
         eventsTbody.innerHTML = data.events.map(e => `
           <tr>
-            <td><span class="badge bg-dark border border-secondary">${escapeHtml(e.event_type)}</span></td>
+            <td><span class="badge bg-light text-dark border">${escapeHtml(e.event_type)}</span></td>
             <td><code>${escapeHtml(e.source_ip)}</code></td>
-            <td class="text-muted">${escapeHtml(e.username || "—")}</td>
+            <td class="text-secondary">${escapeHtml(e.username || "—")}</td>
             <td><span class="badge-sev badge-sev-${e.severity.toLowerCase()}">${e.severity}</span></td>
             <td class="text-muted small">${formatDate(e.event_time)}</td>
           </tr>

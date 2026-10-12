@@ -34,7 +34,7 @@
             {% for u in users %}
             <tr>
               <td class="text-muted">#{{ u.id }}</td>
-              <td class="fw-semibold text-white">
+              <td class="fw-semibold text-dark">
                 <i class="bi bi-person-circle text-info me-1"></i> {{ u.username }}
                 {% if u.id == current_user.id %}
                   <span class="badge bg-secondary ms-1" style="font-size: 0.65rem;">You</span>
@@ -79,7 +79,7 @@
     <div class="modal-content soc-modal">
       <div class="modal-header soc-modal-header">
         <h5 class="modal-title fs-6"><i class="bi bi-person-plus text-info"></i> Provision SOC Account</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form id="createUserForm">
         <div class="modal-body p-4">

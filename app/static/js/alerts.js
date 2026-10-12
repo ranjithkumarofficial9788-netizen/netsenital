@@ -123,7 +123,7 @@ async function loadAlerts() {
           <td colspan="8" class="text-center py-5">
             <div class="soc-empty-state">
               <div class="soc-empty-icon"><i class="bi bi-shield-check text-success"></i></div>
-              <h6 class="text-white">No security alerts found</h6>
+              <h6 class="text-dark">No security alerts found</h6>
               <p class="text-muted small">No active threats match the selected filter criteria.</p>
             </div>
           </td>
@@ -137,10 +137,10 @@ async function loadAlerts() {
         <td class="text-muted">#${a.id}</td>
         <td class="text-nowrap small text-muted">${formatDate(a.created_at)}</td>
         <td><code class="text-info">${escapeHtml(a.rule_code)}</code></td>
-        <td class="fw-semibold text-white text-truncate" style="max-width: 230px;" title="${escapeHtml(a.title)}">${escapeHtml(a.title)}</td>
+        <td class="fw-semibold text-dark text-truncate" style="max-width: 230px;" title="${escapeHtml(a.title)}">${escapeHtml(a.title)}</td>
         <td><span class="badge-sev badge-sev-${a.severity.toLowerCase()}">${a.severity}</span></td>
         <td><span class="badge-sev badge-status-${a.status === 'NEW' ? 'new' : (a.status === 'ACKNOWLEDGED' ? 'ack' : 'res')}">${a.status}</span></td>
-        <td><span class="badge bg-dark border border-secondary">Event #${a.event_id}</span></td>
+        <td><span class="badge bg-light border text-dark">Event #${a.event_id}</span></td>
         <td class="text-end">
           <button class="btn btn-sm btn-soc-secondary py-0 px-2" onclick="investigateAlert(${a.id})" title="Investigate Threat Alert">
             <i class="bi bi-search"></i> Inspect
@@ -179,11 +179,11 @@ async function investigateAlert(alertId) {
       <div class="row g-3">
         <div class="col-md-6">
           <label class="text-muted small text-uppercase">Alert ID & Rule</label>
-          <div class="fw-bold text-white">#${a.id} &mdash; <code class="text-info">${escapeHtml(a.rule_code)}</code></div>
+          <div class="fw-bold text-dark">#${a.id} &mdash; <code class="text-info">${escapeHtml(a.rule_code)}</code></div>
         </div>
         <div class="col-md-6">
           <label class="text-muted small text-uppercase">Detection Time</label>
-          <div class="fw-bold text-white">${formatDate(a.created_at)} UTC</div>
+          <div class="fw-bold text-dark">${formatDate(a.created_at)} UTC</div>
         </div>
         <div class="col-md-6">
           <label class="text-muted small text-uppercase">Severity</label>
@@ -195,15 +195,15 @@ async function investigateAlert(alertId) {
         </div>
         <div class="col-12">
           <label class="text-muted small text-uppercase">Threat Description</label>
-          <div class="p-3 rounded bg-dark border border-secondary text-light">${escapeHtml(a.description)}</div>
+          <div class="p-3 rounded bg-light border text-dark">${escapeHtml(a.description)}</div>
         </div>
 
         ${ev ? `
         <div class="col-12 mt-3">
-          <h6 class="text-white border-bottom border-secondary pb-2 mb-3"><i class="bi bi-lightning-charge text-warning"></i> Triggering Source Event (#${ev.id})</h6>
+          <h6 class="text-dark border-bottom pb-2 mb-3"><i class="bi bi-lightning-charge text-warning"></i> Triggering Source Event (#${ev.id})</h6>
           <div class="row g-2 small">
-            <div class="col-sm-4 text-muted">Source IP: <code class="text-light">${escapeHtml(ev.source_ip)}</code></div>
-            <div class="col-sm-4 text-muted">Target User: <strong class="text-light">${escapeHtml(ev.username || 'N/A')}</strong></div>
+            <div class="col-sm-4 text-muted">Source IP: <code>${escapeHtml(ev.source_ip)}</code></div>
+            <div class="col-sm-4 text-muted">Target User: <strong class="text-dark">${escapeHtml(ev.username || 'N/A')}</strong></div>
             <div class="col-sm-4 text-muted">Event Type: <span class="badge bg-secondary">${escapeHtml(ev.event_type)}</span></div>
             <div class="col-12 text-muted mt-2">Log Message:</div>
             <div class="col-12"><div class="soc-code p-2">${escapeHtml(ev.message)}</div></div>
@@ -212,8 +212,8 @@ async function investigateAlert(alertId) {
         ` : ''}
 
         ${a.status === 'RESOLVED' ? `
-        <div class="col-12 mt-3 p-2 rounded bg-dark border border-success">
-          <div class="small text-success"><i class="bi bi-check-circle-fill"></i> Resolved by <strong>${escapeHtml(a.resolver_username || 'Analyst')}</strong> at ${formatDate(a.resolved_at)}</div>
+        <div class="col-12 mt-3 p-2 rounded bg-success-subtle border border-success-subtle">
+          <div class="small text-success-emphasis"><i class="bi bi-check-circle-fill"></i> Resolved by <strong>${escapeHtml(a.resolver_username || 'Analyst')}</strong> at ${formatDate(a.resolved_at)}</div>
         </div>
         ` : ''}
       </div>

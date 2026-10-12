@@ -17,9 +17,9 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), unique=True, nullable=False, index=True)
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
     password_hash = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.String(20), nullable=False, default="analyst")  # 'admin' or 'analyst'
-    is_active = db.Column(db.Boolean, default=True, nullable=False)
-    created_at = db.Column(db.DateTime, default=utcnow, nullable=False)
+    role = db.Column(db.String(20), nullable=False, default="analyst", server_default="analyst", index=True)
+    is_active = db.Column(db.Boolean, default=True, server_default="1", nullable=False, index=True)
+    created_at = db.Column(db.DateTime, default=utcnow, server_default=db.func.current_timestamp(), nullable=False)
 
     # Relationships
     uploads = db.relationship("UploadBatch", backref="uploader", lazy="dynamic")
@@ -69,11 +69,11 @@ class UploadBatch(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     original_filename = db.Column(db.String(255), nullable=False)
     uploaded_by = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
-    total_rows = db.Column(db.Integer, default=0, nullable=False)
-    accepted_rows = db.Column(db.Integer, default=0, nullable=False)
-    rejected_rows = db.Column(db.Integer, default=0, nullable=False)
-    status = db.Column(db.String(30), default="completed", nullable=False)  # 'processing', 'completed', 'failed'
-    created_at = db.Column(db.DateTime, default=utcnow, nullable=False)
+    total_rows = db.Column(db.Integer, default=0, server_default="0", nullable=False)
+    accepted_rows = db.Column(db.Integer, default=0, server_default="0", nullable=False)
+    rejected_rows = db.Column(db.Integer, default=0, server_default="0", nullable=False)
+    status = db.Column(db.String(30), default="completed", server_default="completed", nullable=False)
+    created_at = db.Column(db.DateTime, default=utcnow, server_default=db.func.current_timestamp(), nullable=False)
 
     # Relationships
     events = db.relationship("SecurityEvent", backref="upload_batch", cascade="all, delete-orphan", lazy="dynamic")
@@ -103,11 +103,11 @@ class SecurityEvent(db.Model):
     event_type = db.Column(db.String(64), nullable=False, index=True)
     source_ip = db.Column(db.String(45), nullable=False, index=True)  # Supports IPv4 and IPv6
     username = db.Column(db.String(64), nullable=True, index=True)
-    status = db.Column(db.String(30), nullable=False, default="failure")  # 'failure', 'success', 'attempt', 'denied'
+    status = db.Column(db.String(30), nullable=False, default="failure", server_default="failure")
     severity = db.Column(db.String(20), nullable=False, index=True)  # 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL'
     message = db.Column(db.Text, nullable=False)
     event_time = db.Column(db.DateTime, nullable=False, index=True)
-    created_at = db.Column(db.DateTime, default=utcnow, nullable=False)
+    created_at = db.Column(db.DateTime, default=utcnow, server_default=db.func.current_timestamp(), nullable=False)
     upload_batch_id = db.Column(db.Integer, db.ForeignKey("upload_batches.id", ondelete="SET NULL"), nullable=True, index=True)
 
     # Relationships
@@ -125,7 +125,6 @@ class SecurityEvent(db.Model):
             "event_time": self.event_time.isoformat() if self.event_time else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "upload_batch_id": self.upload_batch_id,
-            "alert_count": self.alerts.count() if hasattr(self, "alerts") else 0,
         }
 
     def __repr__(self):
@@ -145,8 +144,8 @@ class Alert(db.Model):
     title = db.Column(db.String(150), nullable=False)
     severity = db.Column(db.String(20), nullable=False, index=True)  # 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL'
     description = db.Column(db.Text, nullable=False)
-    status = db.Column(db.String(20), nullable=False, default="NEW", index=True)  # 'NEW', 'ACKNOWLEDGED', 'RESOLVED'
-    created_at = db.Column(db.DateTime, default=utcnow, nullable=False)
+    status = db.Column(db.String(20), nullable=False, default="NEW", server_default="NEW", index=True)  # 'NEW', 'ACKNOWLEDGED', 'RESOLVED'
+    created_at = db.Column(db.DateTime, default=utcnow, server_default=db.func.current_timestamp(), nullable=False)
     resolved_at = db.Column(db.DateTime, nullable=True)
     resolved_by = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
 
@@ -179,7 +178,7 @@ class AuditLog(db.Model):
     action = db.Column(db.String(64), nullable=False, index=True)
     details = db.Column(db.Text, nullable=True)
     ip_address = db.Column(db.String(45), nullable=True)
-    created_at = db.Column(db.DateTime, default=utcnow, nullable=False)
+    created_at = db.Column(db.DateTime, default=utcnow, server_default=db.func.current_timestamp(), index=True, nullable=False)
 
     def to_dict(self):
         return {
